@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+
+	"example.com/socket/cmd/pkg/datos"
 )
 
 func snd_message(msg string /*sync chan int,*/, i int, done chan bool) {
@@ -18,7 +20,9 @@ func snd_message(msg string /*sync chan int,*/, i int, done chan bool) {
 		//fmt.Print("Introduce texto a enviar:")
 		//text, _ := reader.ReadString('\n')
 		// SEND TO SERVER ;-)
+		vertex := datos.Vertex{X: 1, Y: 2}
 		fmt.Fprintf(conn, msg+"\n")
+		fmt.Fprintf(conn, strconv.FormatInt(int64(vertex.X), 10))
 		// Wait reply
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		fmt.Printf("Recibido del servidor (%v): %v\n", i, message)

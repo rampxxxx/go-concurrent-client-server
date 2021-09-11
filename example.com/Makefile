@@ -5,7 +5,7 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOINSTALL=$(GOCMD) install
 GOGET=$(GOCMD) get
-BINARY_NAME=cmd/client/client.go cmd/server/server.go
+BINARY_NAME=cmd/client/client.go cmd/server/server.go cmd/pkg/datos/datos.go
 BINARY_UNIX=$(BINARY_NAME)_unix
 
 all: test build
