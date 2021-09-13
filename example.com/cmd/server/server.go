@@ -1,20 +1,29 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"net"
 )
 
 func rcv_message(conn net.Conn, syn chan bool) {
+	//vertex := datos.Vertex{}
+	var netword_buffer = make([]byte, 1024)
+	//dec := gob.NewDecoder(&netword_buffer)
 	defer conn.Close()
-	message, error := bufio.NewReader(conn).ReadString('\n')
-	if error == nil {
-		fmt.Printf("Message received:(%v)\n", string(message))
-		fmt.Fprintf(conn, "Desde el servidor\n"+string(message))
+	count, err := conn.Read(netword_buffer)
+	if err == nil {
+		fmt.Printf("Message count (%v) received:(%v)\n", count, netword_buffer)
 	} else {
-		fmt.Printf("Error %v waiting client\n", error.Error())
+		fmt.Printf("Error receiving (%v)\n", err.Error())
+	}
+	//err = dec.Decode(&netword_buffer)
+	//message, err := bufio.NewReader(conn).ReadString('\n')
+	if err == nil {
+		fmt.Printf("Message decoded:(%v)\n", netword_buffer)
+		fmt.Fprintf(conn, "Desde el servidor (%v)\n", netword_buffer)
+	} else {
+		fmt.Printf("Error %v waiting client\n", err.Error())
 		//os.Exit(1)
 	}
 	syn <- true

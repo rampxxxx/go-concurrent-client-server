@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/gob"
 	"fmt"
 	"net"
 	"strconv"
@@ -20,9 +22,26 @@ func snd_message(msg string /*sync chan int,*/, i int, done chan bool) {
 		//fmt.Print("Introduce texto a enviar:")
 		//text, _ := reader.ReadString('\n')
 		// SEND TO SERVER ;-)
-		vertex := datos.Vertex{X: 1, Y: 2}
-		fmt.Fprintf(conn, msg+"\n")
-		fmt.Fprintf(conn, strconv.FormatInt(int64(vertex.X), 10))
+		vertex := datos.Vertex{X: 6, Y: 9}
+		var netword_buffer bytes.Buffer
+		enc := gob.NewEncoder(&netword_buffer)
+		err := enc.Encode(vertex)
+		fmt.Printf("Datos pre-encoded : (%v) \n", vertex)
+		fmt.Printf("Datos encoded : (%v) \n", netword_buffer.Bytes())
+		if err == nil {
+			fmt.Printf("Exito codificando ")
+		} else {
+			fmt.Printf("Error al codificar (%v)", err.Error())
+		}
+		//_, err = conn.Write(netword_buffer.Bytes())
+		_, err = conn.Write([]byte("Hola desde cliente"))
+		if err == nil {
+			fmt.Printf("Exito enviando ")
+		} else {
+			fmt.Printf("Error al enviar (%v)", err.Error())
+		}
+		//fmt.Fprintf(conn, msg+"\n")
+		//fmt.Fprintf(conn, strconv.FormatInt(int64(vertex.X), 10))
 		// Wait reply
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		fmt.Printf("Recibido del servidor (%v): %v\n", i, message)
