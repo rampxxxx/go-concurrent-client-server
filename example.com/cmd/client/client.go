@@ -29,12 +29,12 @@ func snd_message(msg string /*sync chan int,*/, i int, done chan bool) {
 		fmt.Printf("Datos pre-encoded : (%v) \n", vertex)
 		fmt.Printf("Datos encoded : (%v) \n", netword_buffer.Bytes())
 		if err == nil {
-			fmt.Printf("Exito codificando ")
+			fmt.Printf("Exito codificando Len:(%v) Cap:(%v)\n", netword_buffer.Len(), netword_buffer.Cap())
 		} else {
 			fmt.Printf("Error al codificar (%v)", err.Error())
 		}
-		//_, err = conn.Write(netword_buffer.Bytes())
-		_, err = conn.Write([]byte("Hola desde cliente"))
+		_, err = conn.Write(netword_buffer.Bytes())
+		//_, err = conn.Write([]byte("Hola desde cliente"))
 		if err == nil {
 			fmt.Printf("Exito enviando ")
 		} else {

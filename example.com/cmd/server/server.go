@@ -1,27 +1,38 @@
 package main
 
 import (
+	"bytes"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net"
+
+	"example.com/socket/cmd/pkg/datos"
 )
 
 func rcv_message(conn net.Conn, syn chan bool) {
-	//vertex := datos.Vertex{}
-	var netword_buffer = make([]byte, 1024)
-	//dec := gob.NewDecoder(&netword_buffer)
+	vertex := datos.Vertex{}
+	//var netword_buffer = make([]byte, 100)
+	//var netword_buffer bytes.Buffer
+	//netword_buffer := new(bytes.Buffer) // 'new' return a pointer
+	netword_buffer := bytes.NewBuffer(make([]byte, 100))
+	netword_buffer.Grow(100)
+	//var read_buffer = make([]byte, 100)
+	var read_buffer = netword_buffer.Bytes()
 	defer conn.Close()
-	count, err := conn.Read(netword_buffer)
+	count, err := conn.Read(read_buffer)
 	if err == nil {
-		fmt.Printf("Message count (%v) received:(%v)\n", count, netword_buffer)
+		fmt.Printf("Message count (%v) received:(%v)\n", count, read_buffer)
 	} else {
 		fmt.Printf("Error receiving (%v)\n", err.Error())
 	}
-	//err = dec.Decode(&netword_buffer)
+	//dec := gob.NewDecoder(&netword_buffer)
+	dec := gob.NewDecoder(netword_buffer)
+	err = dec.Decode(&vertex)
 	//message, err := bufio.NewReader(conn).ReadString('\n')
 	if err == nil {
-		fmt.Printf("Message decoded:(%v)\n", netword_buffer)
-		fmt.Fprintf(conn, "Desde el servidor (%v)\n", netword_buffer)
+		fmt.Printf("Message decoded:(%v)\n", vertex)
+		fmt.Fprintf(conn, "Desde el servidor (%v)\n", vertex)
 	} else {
 		fmt.Printf("Error %v waiting client\n", err.Error())
 		//os.Exit(1)
