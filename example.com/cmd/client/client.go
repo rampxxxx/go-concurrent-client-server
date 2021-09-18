@@ -57,13 +57,13 @@ func main() {
 	done := make(chan bool)
 	fmt.Print("Starting client\n")
 	//synchro := make(chan int, 10)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < datos.MAX_THREADS; i++ {
 		fmt.Printf("Calling gorutine %v \n", strconv.FormatInt(int64(i), 10))
 		//synchro <- i
 		go snd_message("Hola"+strconv.FormatInt(int64(i), 10) /*synchro,*/, i, done)
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < datos.MAX_THREADS; i++ {
 		<-done
 	}
 }
